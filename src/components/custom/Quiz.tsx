@@ -17,56 +17,56 @@ export const Quiz: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [integerAnswer, setIntegerAnswer] = useState<string>("");
 
+  // Memoize current question
   const currentQuestion = useMemo(
     () => quizData.questions[currentQuestionIndex],
     [currentQuestionIndex]
   );
 
+  // Timer effect
   useEffect(() => {
     if (timeLeft > 0 && !quizComplete && !showFeedback) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      const timer = setTimeout(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && !showFeedback) {
       handleAnswer(null);
     }
   }, [timeLeft, quizComplete, showFeedback]);
 
-  const handleAnswer = useCallback(
-    (answer: string | null) => {
-      const finalAnswer =
-        answer ??
-        (quizData.questions[currentQuestionIndex].type === "integer"
-          ? integerAnswer
-          : null);
-      setSelectedAnswer(finalAnswer);
-      setShowFeedback(true);
-      const currentQuestion = quizData.questions[currentQuestionIndex];
-      if (finalAnswer === currentQuestion.correctAnswer) {
-        setScore((prevScore) => prevScore + 1);
-      }
-      setTimeout(() => {
-        setShowFeedback(false);
-        setIntegerAnswer("");
-        if (currentQuestionIndex < quizData.questions.length - 1) {
-          setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-          setTimeLeft(TIME_LIMIT_PER_QUESTION);
-        } else {
-          setQuizComplete(true);
-          setAttempts((prevAttempts) => [
-            ...prevAttempts,
-            {
-              date: new Date().toLocaleString(),
-              score:
-                score + (finalAnswer === currentQuestion.correctAnswer ? 1 : 0),
-              totalQuestions: quizData.questions.length,
-            },
-          ]);
-        }
-      }, FEEDBACK_DELAY);
-    },
-    [currentQuestion, currentQuestionIndex, integerAnswer, score]
-  );
+  // Handle answer submission
+  const handleAnswer = (answer: string | null) => {
+    const finalAnswer =
+      answer ?? (currentQuestion.type === "integer" ? integerAnswer : null);
+    setSelectedAnswer(finalAnswer);
+    setShowFeedback(true);
 
+    if (finalAnswer === currentQuestion.correctAnswer) {
+      setScore((prevScore) => prevScore + 1);
+    }
+
+    setTimeout(() => {
+      setShowFeedback(false);
+      setIntegerAnswer("");
+
+      if (currentQuestionIndex < quizData.questions.length - 1) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+        setTimeLeft(TIME_LIMIT_PER_QUESTION);
+      } else {
+        setQuizComplete(true);
+        setAttempts((prevAttempts) => [
+          ...prevAttempts,
+          {
+            date: new Date().toLocaleString(),
+            score:
+              score + (finalAnswer === currentQuestion.correctAnswer ? 1 : 0),
+            totalQuestions: quizData.questions.length,
+          },
+        ]);
+      }
+    }, FEEDBACK_DELAY);
+  };
+
+  // Restart quiz
   const restartQuiz = useCallback(() => {
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
