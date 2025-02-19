@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { quizData } from "@/data/quixData";
+import { quizData } from "@/data/quizData";
 import { useNavigate } from "react-router-dom";
 
 export const HomePage = () => {

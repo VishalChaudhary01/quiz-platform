@@ -1,5 +1,5 @@
 import { RotateCcw, Trophy } from "lucide-react";
-import { quizData } from "@/data/quixData";
+import { quizData } from "@/data/quizData";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

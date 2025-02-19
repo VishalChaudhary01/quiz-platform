@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Timer, CheckCircle, XCircle } from "lucide-react";
-import { quizData } from "@/data/quixData";
+import { quizData } from "@/data/quizData";
 import { QuizResult } from "./QuizResult";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
